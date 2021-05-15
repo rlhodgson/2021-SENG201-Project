@@ -1,4 +1,3 @@
-package seng201Project;
 
 import java.util.ArrayList;
 
@@ -21,7 +20,8 @@ public class Island {
 	}
 	
 	void visitStore() {
-		System.out.println("View items and costs");
+		System.out.println(name + " Store: \n");
+		store.viewItems();
 	}
 	
 	String getName() {
@@ -31,5 +31,10 @@ public class Island {
 	void addRoute(Route route) {
 		routes.add(route);
 	}
+	
+	void addStore(Store storein) {
+		store = storein;
+	}
  
 }
+
