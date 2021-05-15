@@ -1,13 +1,17 @@
-import java.util.*;  
+import java.util.*; 
+import java.util.Random;
 
 public class GameEnvironment {
 	
 	static String name = "";
 	static int days;
+	static int initialDays;
 	static int money = 500;
 	static Ship myShip;
 	static ArrayList<Item> soldGoods = new ArrayList<Item>();
 	static Island currentIsland;
+	static boolean gameEnd = false;
+
 
 
 	
@@ -33,6 +37,7 @@ public class GameEnvironment {
 			
 			if (tdays <= 50 && tdays >= 20) {
 				days = tdays;
+				initialDays = tdays;
 			} else {
 				System.out.println("Please choose a valid number of days!\n");
 			}
@@ -274,7 +279,6 @@ public class GameEnvironment {
 	}
 	
 	static void game() {
-		boolean gameEnd = false;
 		
 		if ((days <= 5) || (money <= 100)) {
 			gameEnd = true;
@@ -337,6 +341,11 @@ public class GameEnvironment {
 				gameEnd = true;
 				break;
 			}
+			
+			if ((days <= 5) || (money <= 100)) {
+				gameEnd = true;
+				System.out.println("\nYou no longer have enough days or money to survive\n");
+			}
 		}
 		
 		
@@ -346,10 +355,12 @@ public class GameEnvironment {
 	static boolean visit() {
 		boolean output = false;
 		
-		System.out.println("Would you like to buy or sell something? \n");
+		System.out.println("\nYou currently have $" + money + "\n");
+		System.out.println("\nWould you like to buy or sell something? \n");
 		System.out.println("1) Buy\n");
 		System.out.println("2) Sell\n ");
-		System.out.println("3) Leave store ");
+		System.out.println("3) Leave store\n");
+		System.out.println("4) View current goods\n");
 
 		
 		
@@ -398,143 +409,176 @@ public class GameEnvironment {
 		case 3:
 			output = true;
 			break;
+		case 4:
+			System.out.println("\nCurrent goods in cargo: \n");
+			myShip.viewPurchasedGoods();
+			
+			/*view sold goods next*/
+			System.out.println("\nGoods that have been sold: \n");
+			for (Item i : soldGoods) {
+				i.getDescr();
+			}
+			break;
 		}
 		return output;
 	}
 	
 	
 	static void setSail() {
-		System.out.println("You cannot travel to the island you are already on\n");
 		System.out.println("Which island would you like to travel to?\n");
 		int i = 1;
 		for (Island island : islands) {
-			System.out.println(i + ") " + island.name);
-			i += 1;
+			if (island != currentIsland) {
+				Route route = currentIsland.routes.get(i-1);
+				int dist = route.tripDist;
+				int cost = myShip.dailyWage * dist;
+				System.out.println(i + ") " + island.name + " " + dist + " days, $" + cost);
+				i += 1;
+			}
 		}
 		
 		Scanner sc = new Scanner(System.in);
 		int input = sc.nextInt();
 		
-		switch(input) {
-		case 1:
-			Island islandn = islands.get(0);
-			Route route = currentIsland.routes.get(0);
-			int trip = route.tripDist;
-			int cost = myShip.dailyWage * trip;
-			if (cost <= money && trip <= days) {
-				money -= cost;
-				days -= trip;
-				currentIsland = islandn;
-			} else {
-				System.out.println("Unable to travel here sorry!");
+		if (myShip.damage == 0 || (money - myShip.damageCost) > 100 ) {
+			if (myShip.damageCost > 0) {
+				System.out.println("You had some ship damage that has costed you $" + myShip.damageCost + " to fix.");
+				money -=  myShip.damageCost;
+				myShip.damageCost = 0;
+				myShip.damage = 0;
 			}
-			break;
-		case 2:
-			if ((currentIsland.name == "Island1")) {
-				Island islandn2 = islands.get(1);
-				Route route2 = currentIsland.routes.get(0);
-				int trip2 = route2.tripDist;
-				int cost2 = myShip.dailyWage;
-				if (cost2 <= money && trip2 <= days) {
-					money -= cost2;
-					days -= trip2;
-					currentIsland = islandn2;
+			switch(input) {
+			case 1:
+				Island islandn = null;
+				if (currentIsland.name == "Island1") {
+					 islandn = islands.get(1);
+				} else {
+					 islandn = islands.get(0);
+				}
+				Route route = currentIsland.routes.get(0);
+				int trip = route.tripDist;
+				int cost = myShip.dailyWage * trip;
+				if (cost <= money && trip <= days) {
+					money -= cost;
+					days -= trip;
+					currentIsland = islandn;
 				} else {
 					System.out.println("Unable to travel here sorry!");
 				}
-			} else {
-				Island islandn2 = islands.get(1);
-				Route route2 = currentIsland.routes.get(1);
-				int trip2 = route2.tripDist;
-				int cost2 = myShip.dailyWage;
-				if (cost2 <= money && trip2 <= days) {
-					money -= cost2;
-					days -= trip2;
-					currentIsland = islandn2;
+				break;
+			case 2:
+				if ((currentIsland.name == "Island1") || (currentIsland.name == "Island2")) {
+					Island islandn2 = islands.get(2);
+					Route route2 = currentIsland.routes.get(2);
+					int trip2 = route2.tripDist;
+					int cost2 = myShip.dailyWage;
+					if (cost2 <= money && trip2 <= days) {
+						money -= cost2;
+						days -= trip2;
+						currentIsland = islandn2;
+					} else {
+						System.out.println("Unable to travel here sorry!");
+					}
 				} else {
-					System.out.println("Unable to travel here sorry!");
+					Island islandn2 = islands.get(1);
+					Route route2 = currentIsland.routes.get(1);
+					int trip2 = route2.tripDist;
+					int cost2 = myShip.dailyWage;
+					if (cost2 <= money && trip2 <= days) {
+						money -= cost2;
+						days -= trip2;
+						currentIsland = islandn2;
+					} else {
+						System.out.println("Unable to travel here sorry!");
+					}
 				}
+				break;
+			case 3:
+				if ((currentIsland.name == "Island4") || (currentIsland.name == "Island5")) {
+					Island islandn3 = islands.get(2);
+					Route route3 = currentIsland.routes.get(2);
+					int trip3 = route3.tripDist;
+					int cost3 = myShip.dailyWage;
+					if (cost3 <= money && trip3 <= days) {
+						money -= cost3;
+						days -= trip3;
+						currentIsland = islandn3;
+					} else {
+						System.out.println("Unable to travel here sorry!");
+					}
+				} else {
+					Island islandn3 = islands.get(3);
+					Route route3 = currentIsland.routes.get(2);
+					int trip3 = route3.tripDist;
+					int cost3 = myShip.dailyWage;
+					if (cost3 <= money && trip3 <= days) {
+						money -= cost3;
+						days -= trip3;
+						currentIsland = islandn3;
+					} else {
+						System.out.println("Unable to travel here sorry!");
+					}
+				}
+				
+				break;
+			case 4:
+				if ((currentIsland.name == "Island5")) {
+					Island islandn4 = islands.get(3);
+					Route route4 = currentIsland.routes.get(3);
+					int trip4 = route4.tripDist;
+					int cost4 = myShip.dailyWage;
+					if (cost4 <= money && trip4 <= days) {
+						money -= cost4;
+						days -= trip4;
+						currentIsland = islandn4;
+					} else {
+						System.out.println("Unable to travel here sorry!");
+					}
+				} else {
+					Island islandn4 = islands.get(4);
+					Route route4 = currentIsland.routes.get(3);
+					int trip4 = route4.tripDist;
+					int cost4 = myShip.dailyWage;
+					if (cost4 <= money && trip4 <= days) {
+						money -= cost4;
+						days -= trip4;
+						currentIsland = islandn4;
+					} else {
+						System.out.println("Unable to travel here sorry!");
+					}
+				}
+				break;
 			}
-			break;
-		case 3:
-			if ((currentIsland.name == "Island1") || (currentIsland.name == "Island2")) {
-				Island islandn3 = islands.get(2);
-				Route route3 = currentIsland.routes.get(1);
-				int trip3 = route3.tripDist;
-				int cost3 = myShip.dailyWage;
-				if (cost3 <= money && trip3 <= days) {
-					money -= cost3;
-					days -= trip3;
-					currentIsland = islandn3;
-				} else {
-					System.out.println("Unable to travel here sorry!");
-				}
-			} else {
-				Island islandn3 = islands.get(2);
-				Route route3 = currentIsland.routes.get(2);
-				int trip3 = route3.tripDist;
-				int cost3 = myShip.dailyWage;
-				if (cost3 <= money && trip3 <= days) {
-					money -= cost3;
-					days -= trip3;
-					currentIsland = islandn3;
-				} else {
-					System.out.println("Unable to travel here sorry!");
+			Random rand = new Random();
+			RandomEvent random = null;
+			int int_random = rand.nextInt(5);
+			if (int_random <= 2) {
+				random = new RandomEvent(int_random, myShip);
+			}
+			if (random != null) {
+				if (random.money != 0) {
+					money += random.money;
+				} 
+				if (random.pirates == true) {
+					gameEnd = true;
 				}
 			}
 			
-			break;
-		case 4:
-			if ((currentIsland.name == "Island5")) {
-				Island islandn4 = islands.get(3);
-				Route route4 = currentIsland.routes.get(3);
-				int trip4 = route4.tripDist;
-				int cost4 = myShip.dailyWage;
-				if (cost4 <= money && trip4 <= days) {
-					money -= cost4;
-					days -= trip4;
-					currentIsland = islandn4;
-				} else {
-					System.out.println("Unable to travel here sorry!");
-				}
-			} else {
-				Island islandn4 = islands.get(3);
-				Route route4 = currentIsland.routes.get(2);
-				int trip4 = route4.tripDist;
-				int cost4 = myShip.dailyWage;
-				if (cost4 <= money && trip4 <= days) {
-					money -= cost4;
-					days -= trip4;
-					currentIsland = islandn4;
-				} else {
-					System.out.println("Unable to travel here sorry!");
-				}
-			}
-			break;
-		case 5:
-			Island islandn5 = islands.get(4);
-			Route route5 = currentIsland.routes.get(3);
-			int trip5 = route5.tripDist;
-			int cost5 = myShip.dailyWage;
-			if (cost5 <= money && trip5 <= days) {
-				money -= cost5;
-				days -= trip5;
-				currentIsland = islandn5;
-			} else {
-				System.out.println("Unable to travel here sorry!");
-			}
-			break;
-			
+			game();
+		} else {
+			System.out.println("You do not have enough money to fix the damage to your ship!");
 		}
-		
-		game();
 	}
 	
 	static void purchaseItem(Item item) {
-		money -= item.price;
-		myShip.cargo.add(item);
-		myShip.cargoSpace -= item.size;
-		System.out.println("You have successfully purchased the item!\n");
+		if (money - item.price > 0) {
+			money -= item.price;
+			myShip.cargo.add(item);
+			myShip.cargoSpace -= item.size;
+			System.out.println("You have successfully purchased the item!\n");
+		} else {
+			System.out.println("You do not have enough money to purchase this item!\n");
+		}
 	}
 	
 	static void sellItem(Item item) {
@@ -567,6 +611,9 @@ public class GameEnvironment {
 	public static void main(String[] args) {
 		setUp();
 		game();
+		int score = (initialDays -(initialDays - days)) * money;
+		System.out.println(name + " you have played for " + (initialDays -(initialDays - days)) + " days out of the " + initialDays +
+				" days you requested to play for. \nYou have achieved a score of " + score + " points!");
 		System.out.println("\nThank you for playing!\n");
 	}
 	
