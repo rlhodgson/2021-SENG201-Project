@@ -1,4 +1,3 @@
-package seng201Project;
 
 import java.util.ArrayList;
 
@@ -44,3 +43,4 @@ public class Ship {
 	
 
 }
+
