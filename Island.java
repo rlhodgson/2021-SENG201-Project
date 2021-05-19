@@ -2,39 +2,67 @@
 import java.util.ArrayList;
 
 public class Island {
-	String name;
-	ArrayList<Route> routes;
-	Store store;
+	private String name;
+	private ArrayList<Route> routes;
+	private Store store;
 	
 	Island(String nname)	{
 		name = nname;
 		routes = new ArrayList<Route>();
 	}
 	
-	void viewProperties() {
+	public void viewProperties(int wage) {
 		System.out.println(name + " has routes:\n");
 		for (Route i : routes) {
-			i.viewProperties();
+			i.viewProperties(wage);
 		}
 		/*need to do store still*/
 	}
 	
-	void visitStore() {
-		System.out.println(name + " Store: \n");
-		store.viewItems();
+	public void displayRoutes(int wage) {
+		int i = 1;
+		for (Route route: this.routes) {
+			System.out.print(i + ") ");
+			route.viewProperties(wage);
+			i ++;
+		}
 	}
 	
-	String getName() {
-		return  name;
+	public void listStoreItems() {
+		this.store.viewItems();
 	}
 	
-	void addRoute(Route route) {
-		routes.add(route);
+	public String getName() {
+		return this.name;
 	}
 	
-	void addStore(Store storein) {
-		store = storein;
+	public void addRoute(Route route) {
+		this.routes.add(route);
 	}
- 
-}
+	
+	public void addStore(Store storein) {
+		this.store = storein;
+	}
+	
+	public void viewStoreSelling() {
+		this.store.viewSelling();
+	}
+	
+	public void viewStoreBuying() {
+		this.store.viewBuying();
+	}
+	
+	public Item getItemSold(int index) {
+		return this.store.getItemSold(index);
+	}
+	
+	public Item getItemPurchased(int index) {
+		return this.store.getItemPurchased(index);
+	}
+	
+	public Route getRoute(int index) {
+		return this.routes.get(index);
+	}
+	
+}	
 
