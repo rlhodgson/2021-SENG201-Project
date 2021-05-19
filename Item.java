@@ -1,28 +1,51 @@
 
 public class Item {
 	
-	String name;
-	int size;
-	String description;
-	int price;
+	private String name;
+	private int size;
+	private String description;
+	private int price;
 	
-	int amountSold;
-	Island storeSold = null;
+	// only used when the item is sold
+	private int amountSold;
+	private Island storeSold = null;
 	
 	Item(String namein, int pricein, int sizein, String descript) {
-		name = namein;
-		size = sizein;
-		price = pricein;
-		description = descript;
+		this.name = namein;
+		this.size = sizein;
+		this.price = pricein;
+		this.description = descript;
 		
 	}
 	
-	void getDescr() {
-		if (storeSold != null) {
-			System.out.println(name + " sold for " + amountSold + " at the store on " + storeSold.name);
+	
+	public void getDescr() {
+		if (this.storeSold != null) {
+			System.out.println(this.name + " sold for " + this.amountSold + " at the store on " + this.storeSold.getName());
 		} else {
-			System.out.println(name + " cost you " + price + " and is taking up " + size + " amount of cargo.");
+			System.out.println(this.name + " cost you " + this.price + " and is taking up " + this.size + " amount of cargo.");
 		}
+	}
+	
+	public String getRawDescription() {		// used to return the raw string of description instead of the one above
+		return this.description;
+	}
+	
+	public int getSize() {
+		return this.size;
+	}
+	
+	public int getPrice() {
+		return price;
+	}
+	
+	public String getName() {
+		return this.name;
+	}
+	
+	public void changeSoldInfo(int soldFor, Island soldAtIsland) {
+		this.amountSold = soldFor;
+		this.storeSold = soldAtIsland;
 	}
 
 }
