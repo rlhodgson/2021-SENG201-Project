@@ -1,20 +1,29 @@
 public class Route {
-	String destIsland;
-	String origIsland;
-	int tripDist;
-	String routeDets;
+	private String destIsland;
+	private String origIsland;
+	private int tripDist;
+	private int tripDays;
+	private String routeDets;
 	
-	Route(String origIslandIn , String destIslandIn, int tripIn, String routeDetsin)	{
-		destIsland = destIslandIn;
-		origIsland = origIslandIn;
-		tripDist = tripIn;
-		routeDets = routeDetsin;
+	Route(String origIslandIn , String destIslandIn, int tripIn, int shipSpeed, String routeDetsin)	{
+		this.destIsland = destIslandIn;
+		this.origIsland = origIslandIn;
+		this.tripDist = tripIn;
+		this.routeDets = routeDetsin;
+		this.tripDays = (int)(tripIn / shipSpeed / 24);
 	}
 	
-	void viewProperties() {
-		System.out.println("The distance from " + origIsland + " to " + destIsland + " is "
-				+ tripDist +" km. " + routeDets);
+	public void viewProperties(int wage) {
+		System.out.println("The distance from " + this.origIsland + " to " + this.destIsland + " is "
+				+ tripDist +" km. It will take " + this.tripDays + " days to get there. It will cost $" + (wage * this.tripDays) + ". "+ this.routeDets);
 	}
 	
+	public int getDays() {
+		return this.tripDays;
+	}
+	
+	public String getDestination() {
+		return this.destIsland;
+	}
 
 }
