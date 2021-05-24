@@ -2,47 +2,100 @@
 import java.util.ArrayList;
 
 public class Ship {
-	String name;
-	int crewNum;
-	int dailyWage;
-	int cargoSpace;
-	ArrayList<String> upgrades = new ArrayList<String>();
-	ArrayList<Item> cargo = new ArrayList<Item>();
-	int damage;
-	int damageCost;
+	private String name;
+	private int crewNum;
+	private int sailSpeed;
+	private int cargoSpace;
+	private ArrayList<String> upgrades = new ArrayList<String>();
+	private ArrayList<Item> cargo = new ArrayList<Item>();
+	private int damageTaken = 0;
+	private int health; // not used in this version
+	private int dailyWage;
 	
-	Ship(String nname, int ncrewNum, int ndailyWage, int ncargoSpace) {
-		name = nname;
-		crewNum = ncrewNum;
-		dailyWage = ndailyWage;
-		cargoSpace = ncargoSpace;
+	
+	Ship(String nname, int ncrewNum, int sailSpeed, int ncargoSpace, int health) {
+		this.name = nname;
+		this.crewNum = ncrewNum;
+		this.sailSpeed = sailSpeed;
+		this.cargoSpace = ncargoSpace;
+		this.health = health;
+		this.dailyWage = (int)(ncrewNum * 1.5);
+		
 	}
 	
 	public String viewDetails() {
-		String answer = "";
-		answer += ("\nYour ship, " + name + ", has " + crewNum +" crew members.");
-		answer += ("\nEach day sailing will cost you $" + dailyWage + ". Currently there is " + cargoSpace + " meters of cargo space available");
-		if (upgrades.size() == 0) {
-			answer += ("\nThere are currently no upgrades");
+		
+		String toReturn = "\nYour ship, " + this.name + ", has " + this.crewNum +" crew members.";
+		toReturn += "\nEach day sailing will cost you $" + this.dailyWage + ". Currently there is " + this.cargoSpace + " units of cargo space available";
+		if (this.upgrades.size() == 0) {
+			toReturn += "\nThere are currently no upgrades";
 		} else {
-			answer += ("\nThe current upgrade(s) are: \n");
-			for (String upgrade : upgrades) {
-				answer += (upgrade + "\n");
+			toReturn += "\nThe current upgrade(s) are: \n";
+			for (String upgrade : this.upgrades) {
+				toReturn += upgrade;
 			}
 		}
-		answer += ("\nThe damage to your ship is " + damage + ". This will cost you $" + damageCost + " to fix.\n");
-		return answer;
+		if (this.damageTaken == 0) {
+			toReturn += "\nYour ship has no damage";
+		}else {
+			toReturn += "\nThe damage to your ship is " + this.damageTaken + ". This will cost you $" + getDamageCost() + " to fix.\n";
+		}
+	
+		return toReturn;
 	}
+	
 	
 	public String viewPurchasedGoods() {
-		String answer = "";
+		String toReturn = "";
 		for (Item i : cargo) {
-			answer += i.getDescr();
+			toReturn += i.getDescr();
 		}
 		
-		return answer;
+		return toReturn;
 	}
 	
+	public int getCargoSpace() {
+		return this.cargoSpace;
+	}
+	
+	public void addCargo(Item item) {
+		this.cargo.add(item);
+		this.cargoSpace -= item.getSize();
+	}
+	
+	public void removeItem(Item item) {
+		this.cargo.remove(item);
+		this.cargoSpace += item.getSize();
+	}
+	
+	public ArrayList<Item> getCargo(){
+		return this.cargo;
+	}
+	
+	public int getSpeed() {
+		return this.sailSpeed;
+	}
+	
+	public int getDailyCost() {
+		return this.dailyWage;
+	}
+	
+	public void changeDamage(int damage) {
+		this.damageTaken += damage;
+	}
+	
+	public int getDamageCost() {
+		double damageCost = (double)(this.damageTaken) / (double)(this.health);
+		return (int)(damageCost * 100.0);
+	}
+	
+	public String getName() {
+		return this.name;
+	}
+	
+	public void resetDamage() {
+		this.damageTaken = 0;
+	}
 
 }
 
