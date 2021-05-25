@@ -25,7 +25,7 @@ public class Ship {
 	
 	public String viewDetails() {
 		
-		String toReturn = "\nYour ship, " + this.name + ", has " + this.crewNum +" crew members.";
+		String toReturn = "\nShip, " + this.name + ", has " + this.crewNum +" crew members.";
 		toReturn += "\nEach day sailing will cost you $" + this.dailyWage + ". Currently there is " + this.cargoSpace + " units of cargo space available";
 		if (this.upgrades.size() == 0) {
 			toReturn += "\nThere are currently no upgrades";
@@ -44,6 +44,9 @@ public class Ship {
 		return toReturn;
 	}
 	
+	public void addUpgrade(String upgrade) {
+		this.upgrades.add(upgrade);
+	}
 	
 	public String viewPurchasedGoods() {
 		String toReturn = "";
