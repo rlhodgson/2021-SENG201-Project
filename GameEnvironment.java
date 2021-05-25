@@ -149,6 +149,9 @@ public class GameEnvironment {
 		if (this.money - item.getPrice() >= 0 && this.myShip.getCargoSpace() - item.getSize() >= 0) {  	
 			this.money -= item.getPrice();
 			this.myShip.addCargo(item);
+			if (item.getName().contains("Upgrade")) {
+				this.myShip.addUpgrade(item.getName());
+			}
 			canPurchase = true;
 		}
 		
