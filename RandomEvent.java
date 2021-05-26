@@ -1,5 +1,10 @@
 import java.util.Random;
 
+/**Random event class controlling random encounters
+ * 
+ * @author Rachel Hodgson and Aidan Campbell
+ *
+ */
 public class RandomEvent {
 	private Ship ship;
 	private int eventNum;
@@ -11,6 +16,10 @@ public class RandomEvent {
 		this.eventNum = eventNum;
 	}
 	
+	/**Initiates a random event, returns the string based on the outcome
+	 * 
+	 * @return String
+	 */
 	public String initiateEvent() {
 		
 		String toReturn = "";
@@ -26,6 +35,10 @@ public class RandomEvent {
 		return toReturn;
 	}
 		
+	/**Returns the appropriate string based on the outcome of an encounter with pirates
+	 * 
+	 * @return String
+	 */
 	public String pirateEvent() {
 		/* Random event of pirates occurring */
 		String toReturn;
@@ -62,7 +75,10 @@ public class RandomEvent {
 	} 
 
 	
-	
+	/**Returns the appropriate string based on the outcome of an encounter with bad weather
+	 * 
+	 * @return String
+	 */
 	public String badWeather() {
 		/* Random event of bad weather occurring */
 		
@@ -77,6 +93,10 @@ public class RandomEvent {
 
 	}
 	
+	/**Returns the appropriate string based on the outcome of rescuing sailors
+	 * 
+	 * @return String
+	 */
 	public String rescueSailors() {
 		/* Random event of sailors being rescued */
 		Random rand = new Random();
@@ -87,10 +107,18 @@ public class RandomEvent {
 		return toReturn;
 	}
 	
+	/**Returns the amount of money
+	 * 
+	 * @return integer
+	 */
 	public int getMoney() {
 		return this.money;
 	}
 	
+	/**Returns true if the pirates took over the ship or false otherwise
+	 * 
+	 * @return boolean
+	 */
 	public boolean didWalkPlank() {
 		return this.walkedPlank;
 	}
