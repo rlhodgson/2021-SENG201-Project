@@ -1,6 +1,11 @@
 import java.util.*; 
 import java.util.Random;
 
+/**Main class that executes the game 
+ * calls all other methods and launches GUI
+ * @author Rachel Hodgson and Aidan Campbell
+ *
+ */
 public class GameEnvironment {
 	
 	private String name = "";
@@ -13,19 +18,28 @@ public class GameEnvironment {
 	private ArrayList<Island> islands = new ArrayList<Island>();
 	private RandomEvent previousRandomEvent;
 	
-
+	/**Launches the main game window*/
 	public void launchmainWindow() {
 		MainWindow main = new MainWindow(this);
 	}
 
+	/**Closes the main game window
+	 * Given the main window as a parameter
+	 * @param main The main window
+	 * */
 	public void closeMainWindow(MainWindow main) {
 		main.closeWindow();
 	}
 
+	/**Launches the set up game window*/
 	public void launchSetUpWindow() {
 		SetUpWindow setUp = new SetUpWindow(this);
 	}
 
+	/**Closes the set up game window
+	 * then calls the function to launch the main window
+	 * takes the setUp window as a parameter
+	 * @param setUp The set up window*/
 	public void closeSetUpWindow(SetUpWindow setUp) {
 		setUp.closeWindow();
 		islandInitialiser();
@@ -33,7 +47,11 @@ public class GameEnvironment {
 	}
 	
 	
-	
+	/**Checks the name entered is valid
+	 * eg. must be 3-15 characters and have no special characters
+	 * @param name The trader name
+	 * @return boolean
+	 */
 	public boolean checkName(String name) {
 		if (name.length() >= 3 && name.length() <= 15 && name.matches("[ a-zA-Z]+")) {
 			return true;
@@ -42,16 +60,27 @@ public class GameEnvironment {
 		}
 	}
 	
+	/**Sets the name provided 
+	 * 
+	 * @param name The trader name
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 	
+	/**Sets the days provided 
+	 * 
+	 * @param days The game length
+	 */
 	public void setDays(int days) {
 		this.days = days;
 		this.initialDays = days;
 	}
 	
-	
+	/**Sets the ship
+	 * Takes the ship name as a parameter
+	 * @param shipName Name of the ship
+	 */
 	public void setShip(String shipName) {
 		
 		Ship ship1 = new Ship("Voyager", 12, 30, 35, 70);
@@ -76,23 +105,42 @@ public class GameEnvironment {
 		}
 	}
 	
+	/**Returns the name the user has chosen
+	 * 
+	 * @return String
+	 */
 	public String getName() {
 		return this.name;
 	}
 	
-	
+	/**Returns the name of the current island
+	 * Calls the getName method of the island class
+	 * @return String
+	 */
 	public String getCurrentIslandName() {
 		return this.currentIsland.getName();
 	}
 	
+	/**Returns the name of the ship occupied
+	 * Calls the getName method of the ship class
+	 * @return String
+	 */
 	public String getShipName() {
 		return this.myShip.getName();
 	}
 	
+	/**Returns the amount of money
+	 * 
+	 * @return Integer
+	 */
 	public int getMoney() {
 		return this.money;
 	}
 	
+	/**Returns a string of goods in the cargo hold and items that have been sold
+	 * Uses the viewPurchasedGoods() function for cargo items
+	 * @return String
+	 */
 	public String viewPurchasedGoods() {
 				
 		String toReturn = "";
@@ -108,15 +156,30 @@ public class GameEnvironment {
 		return toReturn;
 	}
 	
+	/**Returns a list of items that the store will buy off the trader
+	 * Uses getStoreBuying() method of the island class
+	 * @return ArrayList
+	 */
 	public ArrayList<Item> getItemsStoreBuys(){
 		return this.currentIsland.getStoreBuying();
 	}
 	
+	/**Returns a list of items that the store sells
+	 * Uses getStoreSelling() method of the island class
+	 * @return ArrayList
+	 */
 	public ArrayList<Item> getItemsStoreSells(){
 		return this.currentIsland.getStoreSelling();
 	}
 	
-	
+	/**Returns true is an item can be sold and false otherwise
+	 * If it can be sold, it removes item from cargo using removeItem form ship class, 
+	 * Adds to the money 
+	 * Adds to the sold goods list
+	 * 
+	 * @param item Item that is to be sold
+	 * @return boolean
+	 */
 	public boolean sellItem(Item item) {
 		String itemName = item.getName();
 		Item itemtoRemove = null;
@@ -142,7 +205,13 @@ public class GameEnvironment {
 		return found;
 	}
 	
-	
+	/**Returns true if an item can be purchased and false otherwise
+	 * If true, adds item to cargo using addCargo from ship class,
+	 * Remove money, check if the item is an upgrade and if so add it to ship upgrades.
+	 * 
+	 * @param item Item that is to be purchased
+	 * @return boolean
+	 */
 	public boolean purchaseItem(Item item) {
 		
 		boolean canPurchase = false;
@@ -158,7 +227,11 @@ public class GameEnvironment {
 		return canPurchase;
 	}
 	
-	
+	/**Returns the game over statement,
+	 * Calculates the profit, number of days played and the score
+	 * Displays this in a string
+	 * @return String
+	 */
 	public String getEndStatement() {
 		String endStatement = "";
 		
@@ -175,7 +248,12 @@ public class GameEnvironment {
 		return endStatement;
 	}
 	
-	
+	/**Returns true if the game is over and false otherwise
+	 * Checks there is enough money and days to continue playing,
+	 * Checks damage, the maximum amount of money that can be made 
+	 * And if the game cannot be continued returns true
+	 * @return boolean
+	 */
 	public boolean checkGameEnd() {
 		int minDays = this.currentIsland.getRoute(0).getDays();
 		int minCost = this.myShip.getDailyCost() * minDays;
@@ -199,7 +277,12 @@ public class GameEnvironment {
 		return isFinished;
 	}
 	
-	
+	/**Returns a message based on the outcome of sailing
+	 * If the island can be traveled to, it does so, returns a outcome message
+	 * Else it returns a message saying the action is not allowed
+	 * @param input The index of the island that is going to be traveled to
+	 * @return String
+	 */
 	public String setSail(int input) {
 		
 		this.previousRandomEvent = null;
@@ -218,7 +301,11 @@ public class GameEnvironment {
 		
 	}
 	
-	
+	/**Returns true if a route can be traveled or false otherwise
+	 * 
+	 * @param route Route to be traveled
+	 * @return boolean
+	 */
 	public boolean canTravel(Route route) {
 		
 		if (route.getDays() > this.days){											// Not enough days to travel here
@@ -230,7 +317,10 @@ public class GameEnvironment {
 		}
 	}
 		
-	
+	/**Moves to the next island based on the given route
+	 * 
+	 * @param route The route to be traveled
+	 */
 	public void changeIsland(Route route) {
 		
 		String islandName = route.getDestination();
@@ -243,7 +333,10 @@ public class GameEnvironment {
 		this.money -= route.getDays() * this.myShip.getDailyCost();
 	}
 	
-	
+	/**Initiates the random events while sailing
+	 * Returns a string based on the outcome
+	 * @return String
+	 */
 	public String randomEventHandler() {
 		String eventString = "You have successfully sailed to the island";
 		Random rand = new Random();
@@ -264,15 +357,26 @@ public class GameEnvironment {
 		return eventString;
 	}
 	
-	
+	/**Returns the number of remaining
+	 * 
+	 * @return Integer
+	 */
 	public int getDays() {
 		return this.days;
 	}
 	
+	/**Returns a string of the ship details
+	 * Uses viewDetails() from the ship class
+	 * @return String
+	 */
 	public String viewShipDetails() {
 		return this.myShip.viewDetails();
 	}
 	
+	/**Returns a string of the island details
+	 * Uses viewProperties() from the Island class
+	 * @return String
+	 */
 	public String getIslandsInfo() {
 		String toReturn = "";
 		toReturn += ("Islands:\n");
@@ -288,15 +392,26 @@ public class GameEnvironment {
 		return toReturn;
 	}
 	
+	/**Returns the current island
+	 * 
+	 * @return Island
+	 */
 	public Island getIsland() {
 		return this.currentIsland;
 	}
 	
+	/**Returns the cost of sailing each day
+	 * 
+	 * @return Integer
+	 */
 	public int getDailyWage() {
 		return this.myShip.getDailyCost();
 	}
 	
-	
+	/**Returns true if the trader has lost to pirates in a random encounter or false otherwise
+	 * Uses didWalkPLank() from randomEvent class 
+	 * @return boolean
+	 */
 	public boolean lostToPirates() {
 		boolean didLose = false;
 		if (this.previousRandomEvent != null) {
@@ -308,11 +423,17 @@ public class GameEnvironment {
 	}
 
 
+	/**Returns the cost of ship damage
+	 * 
+	 * @return Integer
+	 */
 	public int getShipDamageCost() {
 		return this.myShip.getDamageCost();
 	}
 	
-	
+	/**Pays for any damage and resets the damage to 0
+	 * 
+	 */
 	public void payDamage() {
 		int damageCost = this.myShip.getDamageCost();
 		this.money -= damageCost;
@@ -321,7 +442,10 @@ public class GameEnvironment {
 
 
 	
-	
+	/**Initializes all routes for each island
+	 * 
+	 * @param island An initial island
+	 */
 	public void routeInitialiser(Island island) {
 		/*Initializes the routes between all islands and the islands stores*/
 		int speed = this.myShip.getSpeed();
@@ -472,7 +596,9 @@ public class GameEnvironment {
 		}	
 	}
 	
-	
+	/**Initializes all islands and their routes
+	 * 
+	 */
 	public void islandInitialiser() {
 		Island island1 = new Island("Pen Island");
 		routeInitialiser(island1);
@@ -498,7 +624,10 @@ public class GameEnvironment {
 
 	}
 	
-
+	/**Main code for environment
+	 * 
+	 * @param args The general arguments of the game
+	 */
 	public static void main(String[] args) {
 		GameEnvironment game = new GameEnvironment();
 		game.launchSetUpWindow();
